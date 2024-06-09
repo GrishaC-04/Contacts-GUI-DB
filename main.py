@@ -120,18 +120,24 @@ def showAllContacts():
                 updated_phone = phone_update.get()
                 updated_address = address_update.get()
 
-                conn = connect('contactsDB.db')
-                crsr = conn.cursor()
-                crsr.execute('''
-                    UPDATE contacts
-                    SET first_name=?, last_name=?, email=?, phone_number=?, address=?
-                    WHERE contact_id=?
-                ''', (updated_first_name, updated_last_name, updated_email, updated_phone, updated_address, selected_contact[0]))
-                conn.commit()
-                conn.close()
-                update_window.destroy()
-                top.destroy()
-                showAllContacts()
+                confirmation = messagebox.askquestion("Confirm Update", "Are you sure?")
+
+                if confirmation == 'yes':
+                    conn = connect('contactsDB.db')
+                    crsr = conn.cursor()
+                    crsr.execute('''
+                        UPDATE contacts
+                        SET first_name=?, last_name=?, email=?, phone_number=?, address=?
+                        WHERE contact_id=?
+                    ''', (updated_first_name, updated_last_name, updated_email, updated_phone, updated_address, selected_contact[0]))
+                    conn.commit()
+                    conn.close()
+                    update_window.destroy()
+                    top.destroy()
+                    showAllContacts()
+                    messagebox.showinfo("Success", "Contact Updated Successfully")
+                else:
+                    messagebox.showwarning("Error", "We met an Error while Updating")    
 
             Button(update_window, text="Save Updates", command=saveUpdates).grid(row=5, column=0, columnspan=2, pady=10)
 
